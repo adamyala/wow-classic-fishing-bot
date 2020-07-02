@@ -9,10 +9,30 @@ from PIL import Image
 
 time.sleep(5)
 
-IMAGE_FILE = 'zone_images/tanaris.png'
-CONFIDENCE = 0.5
-STDS = 3
 
+zone_mapping = {
+    'azshara':{
+        'image': 'azshara.png',
+        'confidence': 0.5,
+        'standard_deviations': 2,
+    },
+    'tanaris': {
+        'image': 'tanaris.png',
+        'confidence': 0.5,
+        'standard_deviations': 3,
+    },
+    'winterspring': {
+        'image': 'winterspring.png',
+        'confidence': 0.4,
+        'standard_deviations': 2,
+    },
+}
+
+ZONE = 'azshara'
+
+IMAGE_FILE = f'zone_images/{zone_mapping[ZONE]["image"]}'
+CONFIDENCE = zone_mapping[ZONE]["confidence"]
+STANDARD_DEVIATIONS = zone_mapping[ZONE]["standard_deviations"]
 
 def reset_cursor():
     pyautogui.move(200, 200)
@@ -78,7 +98,7 @@ while True:
             continue
 
         bobbed_averages = numpy.average(bobber_image_averages)
-        comparison_bobber = bobbed_averages + (STDS * numpy.std(bobber_image_averages))
+        comparison_bobber = bobbed_averages + (STANDARD_DEVIATIONS * numpy.std(bobber_image_averages))
         print('comp bobber', comparison_bobber)
 
         if bobber_average > comparison_bobber:
