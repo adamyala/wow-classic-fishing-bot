@@ -1,14 +1,16 @@
 import os
 import glob
-from datetime import datetime
+from datetime import datetime, timedelta
 import numpy
 import pyautogui
 import time
 from PIL import Image
 
 
-time.sleep(5)
+ZONE = 'tanaris'
+ADD_BAIT = False
 
+time.sleep(5)
 
 zone_mapping = {
     'azshara': {
@@ -20,6 +22,11 @@ zone_mapping = {
         'image': 'barrens.png',
         'confidence': 0.5,
         'standard_deviations': 3,
+    },
+    'stv': {
+        'image': 'stv.png',
+        'confidence': 0.5,
+        'standard_deviations': 2.5,
     },
     'tanaris': {
         'image': 'tanaris.png',
@@ -38,8 +45,6 @@ zone_mapping = {
     },
 }
 
-ZONE = 'tanaris'
-
 IMAGE_FILE = f'zone_images/{zone_mapping[ZONE]["image"]}'
 CONFIDENCE = zone_mapping[ZONE]["confidence"]
 STANDARD_DEVIATIONS = zone_mapping[ZONE]["standard_deviations"]
@@ -50,7 +55,14 @@ def reset_cursor():
     print('resetting cursor')
 
 
+start_fishing = datetime.utcnow()
 while True:
+    if ADD_BAIT and datetime.utcnow() - start_fishing > timedelta(minutes=10):
+        pyautogui.press('-')
+        time.sleep(10)
+        start_fishing = datetime.utcnow()
+        print('bait applied')
+
     # throw bobber
     pyautogui.press('=')
     # wait for bobber to render
