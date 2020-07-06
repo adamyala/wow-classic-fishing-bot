@@ -11,10 +11,15 @@ time.sleep(5)
 
 
 zone_mapping = {
-    'azshara':{
+    'azshara': {
         'image': 'azshara.png',
         'confidence': 0.5,
         'standard_deviations': 2,
+    },
+    'barrens': {
+        'image': 'barrens.png',
+        'confidence': 0.5,
+        'standard_deviations': 3,
     },
     'tanaris': {
         'image': 'tanaris.png',
@@ -26,13 +31,19 @@ zone_mapping = {
         'confidence': 0.4,
         'standard_deviations': 2,
     },
+    'eastern_plaguelands': {
+        'image': 'eastern_plaguelands.png',
+        'confidence': 0.5,
+        'standard_deviations': 3,
+    },
 }
 
-ZONE = 'azshara'
+ZONE = 'tanaris'
 
 IMAGE_FILE = f'zone_images/{zone_mapping[ZONE]["image"]}'
 CONFIDENCE = zone_mapping[ZONE]["confidence"]
 STANDARD_DEVIATIONS = zone_mapping[ZONE]["standard_deviations"]
+
 
 def reset_cursor():
     pyautogui.move(200, 200)
