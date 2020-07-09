@@ -23,15 +23,20 @@ zone_mapping = {
         'confidence': 0.5,
         'standard_deviations': 3,
     },
+    'moonglade': {
+        'image': 'moonglade.png',
+        'confidence': 0.5,
+        'standard_deviations': 3,
+    },
     'stv': {
         'image': 'stv.png',
         'confidence': 0.5,
-        'standard_deviations': 2.5,
+        'standard_deviations': 2,
     },
     'tanaris': {
         'image': 'tanaris.png',
-        'confidence': 0.5,
-        'standard_deviations': 3,
+        'confidence': 0.4,
+        'standard_deviations': 3.25,
     },
     'winterspring': {
         'image': 'winterspring.png',
@@ -127,7 +132,7 @@ while True:
         if bobber_average > comparison_bobber:
             print('found it')
             pyautogui.rightClick(offset_center_x / 2, offset_center_y / 2)
-            time.sleep(1)
+            time.sleep(2)
             reset_cursor()
             break
 
