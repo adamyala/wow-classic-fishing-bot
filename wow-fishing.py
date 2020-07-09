@@ -23,6 +23,11 @@ zone_mapping = {
         'confidence': 0.5,
         'standard_deviations': 3,
     },
+    'feralas': {
+        'image': 'feralas.png',
+        'confidence': 0.5,
+        'standard_deviations': 1.75,
+    },
     'moonglade': {
         'image': 'moonglade.png',
         'confidence': 0.5,
