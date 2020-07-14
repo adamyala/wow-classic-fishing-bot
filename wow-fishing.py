@@ -11,6 +11,7 @@ ZONE = 'tanaris'
 ADD_BAIT = False
 OPEN_CLAMS = True
 
+pyautogui.PAUSE = 2
 time.sleep(5)
 
 zone_mapping = {
@@ -41,8 +42,8 @@ zone_mapping = {
     },
     'tanaris': {
         'image': 'tanaris.png',
-        'confidence': 0.4,
-        'standard_deviations': 3.25,
+        'confidence': 0.5,
+        'standard_deviations': 5.5,
     },
     'winterspring': {
         'image': 'winterspring.png',
@@ -62,7 +63,7 @@ STANDARD_DEVIATIONS = zone_mapping[ZONE]["standard_deviations"]
 
 
 def reset_cursor():
-    pyautogui.move(200, 200)
+    pyautogui.moveTo(200, 200)
     print('resetting cursor')
 
 
@@ -81,8 +82,6 @@ while True:
 
     # throw bobber
     pyautogui.press('=')
-    # wait for bobber to render
-    time.sleep(3)
 
     # take screenshot
     pyautogui.screenshot('screenshot.png')
@@ -102,7 +101,6 @@ while True:
 
     if target is None:
         print('not found')
-        time.sleep(2)
         continue
     print('found it')
 
@@ -125,14 +123,14 @@ while True:
     while now < (start + 25):
         # since the offset center is the center of bobber, we want to go up and left enough to bring the
         # full bobber into the screenshot
-        monitor_left = offset_center_x - 60
-        monitor_top = offset_center_y - 60
-        bobber = pyautogui.screenshot(f'monitor_bobber_{now}.png', region=(monitor_left, monitor_top, 200, 120))
+        monitor_left = offset_center_x - 40
+        monitor_top = offset_center_y - 40
+        bobber = pyautogui.screenshot(f'monitor_bobber_{now}.png', region=(monitor_left, monitor_top, 100, 100))
         bobber_average = numpy.average(bobber)
 
         print('monitor avg', bobber_average)
 
-        if len(bobber_image_averages) < 5:
+        if len(bobber_image_averages) < 7:
             bobber_image_averages.append(bobber_average)
             continue
 
@@ -141,9 +139,8 @@ while True:
         print('comp bobber', comparison_bobber)
 
         if bobber_average > comparison_bobber:
-            print('found it')
-            pyautogui.rightClick(offset_center_x / 2, offset_center_y / 2)
-            time.sleep(2)
+            print('a bite!')
+            pyautogui.rightClick(monitor_left + 40, monitor_top + 40)
             reset_cursor()
             break
 
