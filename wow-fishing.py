@@ -9,6 +9,7 @@ from PIL import Image
 
 ZONE = 'tanaris'
 ADD_BAIT = False
+OPEN_CLAMS = True
 
 time.sleep(5)
 
@@ -21,17 +22,17 @@ zone_mapping = {
     'barrens': {
         'image': 'barrens.png',
         'confidence': 0.5,
-        'standard_deviations': 3,
+        'standard_deviations': 2.5,
     },
     'feralas': {
         'image': 'feralas.png',
         'confidence': 0.5,
-        'standard_deviations': 1.75,
+        'standard_deviations': 2,
     },
     'moonglade': {
         'image': 'moonglade.png',
         'confidence': 0.5,
-        'standard_deviations': 3,
+        'standard_deviations': 2.5,
     },
     'stv': {
         'image': 'stv.png',
@@ -67,11 +68,16 @@ def reset_cursor():
 
 start_fishing = datetime.utcnow()
 while True:
-    if ADD_BAIT and datetime.utcnow() - start_fishing > timedelta(minutes=10):
-        pyautogui.press('-')
-        time.sleep(10)
-        start_fishing = datetime.utcnow()
-        print('bait applied')
+    if datetime.utcnow() - start_fishing > timedelta(minutes=10):
+        if ADD_BAIT:
+            pyautogui.press('-')
+            time.sleep(10)
+            start_fishing = datetime.utcnow()
+            print('bait applied')
+        if OPEN_CLAMS:
+            for _ in range(10):
+                pyautogui.press('_')
+                print('clam opened')
 
     # throw bobber
     pyautogui.press('=')
