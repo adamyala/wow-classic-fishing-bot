@@ -63,31 +63,48 @@ STANDARD_DEVIATIONS = zone_mapping[ZONE]["standard_deviations"]
 
 
 def reset_cursor():
+    # puts the cursor in the upper left of the screen
     pyautogui.moveTo(200, 200)
-    print('resetting cursor')
+    print('resetting cursor', datetime.now())
 
 
+# different actions are performed 10 min after fishing start
+# get the fishing start time so we can determine when to perform actions
 start_fishing = datetime.utcnow()
 while True:
     if datetime.utcnow() - start_fishing > timedelta(minutes=10):
         if ADD_BAIT:
+            # run macro to add bait
             pyautogui.press('-')
             time.sleep(10)
-            start_fishing = datetime.utcnow()
             print('bait applied')
         if OPEN_CLAMS:
+            # spam macro to open clams and free up inventory space
             for _ in range(10):
-                pyautogui.press('_')
-                print('clam opened')
+                pyautogui.press('-')
+        start_fishing = datetime.utcnow()
 
-    # throw bobber
+    # run macro to cast bobber
     pyautogui.press('=')
 
     # take screenshot
     pyautogui.screenshot('screenshot.png')
 
+    # the bobber most often lands in the top center of the screen
+    # crop the screenshot so we can search only that area
+    # faster than searching the whole screen
     with Image.open('screenshot.png') as original_file:
-        # get dimensions
+        # -------------
+        # | | | | | | |
+        # -------------
+        # | | |X|X| | |
+        # -------------
+        # | | |X|X| | |
+        # -------------
+        # | | | | | | |
+        # -------------
+        # | | | | | | |
+        # -------------
         width, height = original_file.size
         left = width / 3
         top = height / 4
@@ -96,50 +113,54 @@ while True:
         cropped_image = original_file.crop((left, top, right, bottom))
     cropped_image.save('cropped.png')
 
-    # find the bobber
+    # look for the bobber. some zones work better with a different confidence level than others
     target = pyautogui.locate(IMAGE_FILE, cropped_image, confidence=CONFIDENCE)
 
     if target is None:
-        print('not found')
+        print('not found', datetime.now())
         continue
-    print('found it')
+    print('found it', datetime.now())
 
     target_center = pyautogui.center(target)
     center_x, center_y = target_center
 
-    # expand to full screen
+    # we readd the x and y pixels that were cropped out
     offset_center_x = center_x + left
     offset_center_y = center_y + top
-    # the offset center is the center of the bobber on the full screen
 
+    # the bobber has been found and now we monitor for changes
     start = datetime.utcnow().timestamp()
     now = start
 
+    # clean up old bobber monitoring images if they exist
     monitor_images = glob.glob('monitor_bobber_*.png')
     for image in monitor_images:
         os.remove(image)
     bobber_image_averages = []
 
+    # the bobber floats for ~25 sec
     while now < (start + 25):
         # since the offset center is the center of bobber, we want to go up and left enough to bring the
         # full bobber into the screenshot
         monitor_left = offset_center_x - 40
         monitor_top = offset_center_y - 40
         bobber = pyautogui.screenshot(f'monitor_bobber_{now}.png', region=(monitor_left, monitor_top, 100, 100))
+
+        # get the avg value of the monitor image
         bobber_average = numpy.average(bobber)
+        print('monitor avg', bobber_average, datetime.now())
 
-        print('monitor avg', bobber_average)
-
+        # collect some monitor image avgs for a good baseline value
         if len(bobber_image_averages) < 7:
             bobber_image_averages.append(bobber_average)
             continue
 
         bobbed_averages = numpy.average(bobber_image_averages)
         comparison_bobber = bobbed_averages + (STANDARD_DEVIATIONS * numpy.std(bobber_image_averages))
-        print('comp bobber', comparison_bobber)
+        print('comp bobber', comparison_bobber, datetime.now())
 
         if bobber_average > comparison_bobber:
-            print('a bite!')
+            print('a bite!', datetime.now())
             pyautogui.rightClick(monitor_left + 40, monitor_top + 40)
             reset_cursor()
             break
