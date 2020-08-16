@@ -7,59 +7,115 @@ import time
 from PIL import Image
 
 
+# the zone we're fishing in
 ZONE = 'tanaris'
+# the number of screenshots to take of the still bobber
+# these images build a standard deviation to compare again
+BOBBER_SAMPLE_SIZE = 10
 ADD_BAIT = False
-OPEN_CLAMS = True
 
+# adding a pause after all screen interactions gives the game
+# time to catch up
 pyautogui.PAUSE = 2
 time.sleep(5)
 
 zone_mapping = {
+    'arathi-highlands': {
+        'image': 'arathi-highlands.png',
+        'confidence': 0.4,
+        'standard-deviations': 3,
+        'open-clams': False,
+    },
     'azshara': {
         'image': 'azshara.png',
         'confidence': 0.5,
-        'standard_deviations': 2,
+        'standard-deviations': 2,
+        'open-clams': True,
     },
     'barrens': {
         'image': 'barrens.png',
         'confidence': 0.5,
-        'standard_deviations': 2.5,
+        'standard-deviations': 2.5,
+        'open-clams': False,
     },
-    'feralas': {
-        'image': 'feralas.png',
-        'confidence': 0.5,
-        'standard_deviations': 2,
-    },
-    'moonglade': {
-        'image': 'moonglade.png',
-        'confidence': 0.5,
-        'standard_deviations': 2.5,
-    },
-    'stv': {
-        'image': 'stv.png',
-        'confidence': 0.5,
-        'standard_deviations': 2,
-    },
-    'tanaris': {
-        'image': 'tanaris.png',
-        'confidence': 0.5,
-        'standard_deviations': 5.5,
-    },
-    'winterspring': {
-        'image': 'winterspring.png',
+    'dustwallow-marsh': {
+        'image': 'dustwallow-marsh.png',
         'confidence': 0.4,
-        'standard_deviations': 2,
+        'standard-deviations': 3,
+        'open-clams': False,
     },
     'eastern_plaguelands': {
         'image': 'eastern_plaguelands.png',
         'confidence': 0.5,
-        'standard_deviations': 3,
+        'standard-deviations': 3,
+        'open-clams': False,
+    },
+    'elwynn-forest': {
+        'image': 'elwynn-forest.png',
+        'confidence': 0.4,
+        'standard-deviations': 3,
+        'open-clams': False,
+    },
+    'feralas': {
+        'image': 'feralas.png',
+        'confidence': 0.5,
+        'standard-deviations': 2,
+        'open-clams': True,
+    },
+    'moonglade': {
+        'image': 'moonglade.png',
+        'confidence': 0.5,
+        'standard-deviations': 2.5,
+        'open-clams': False,
+    },
+    'redridge-mountains': {
+        'image': 'redridge-mountains.png',
+        'confidence': 0.4,
+        'standard-deviations': 3.5,
+        'open-clams': False,
+    },
+    'southshore': {
+        'image': 'southshore.png',
+        'confidence': 0.4,
+        'standard-deviations': 3.25,
+        'open-clams': False,
+    },
+    'stormwind': {
+        'image': 'stormwind.png',
+        'confidence': 0.4,
+        'standard-deviations': 3.5,
+        'open-clams': False,
+    },
+    'stv': {
+        'image': 'stv.png',
+        'confidence': 0.5,
+        'standard-deviations': 3.5,
+        'open-clams': False,
+    },
+    'tanaris': {
+        'image': 'tanaris.png',
+        'confidence': 0.4,
+        'standard-deviations': 5.5,
+        'open-clams': True,
+    },
+    'wetlands': {
+        'image': 'wetlands.png',
+        'confidence': 0.5,
+        'standard-deviations': 3,
+        'open-clams': False,
+    },
+    'winterspring': {
+        'image': 'winterspring.png',
+        'confidence': 0.4,
+        'standard-deviations': 2,
+        'open-clams': False,
     },
 }
 
 IMAGE_FILE = f'zone_images/{zone_mapping[ZONE]["image"]}'
 CONFIDENCE = zone_mapping[ZONE]["confidence"]
-STANDARD_DEVIATIONS = zone_mapping[ZONE]["standard_deviations"]
+STANDARD_DEVIATIONS = zone_mapping[ZONE]["standard-deviations"]
+OPEN_CLAMS = zone_mapping[ZONE]['open-clams']
 
 
 def reset_cursor():
@@ -70,12 +126,13 @@ def reset_cursor():
 
 # different actions are performed 10 min after fishing start
 # get the fishing start time so we can determine when to perform actions
+print('fishing in ', ZONE)
 start_fishing = datetime.utcnow()
 while True:
     if datetime.utcnow() - start_fishing > timedelta(minutes=10):
         if ADD_BAIT:
             # run macro to add bait
-            pyautogui.press('-')
+            pyautogui.press('0')
             time.sleep(10)
             print('bait applied')
         if OPEN_CLAMS:
@@ -86,6 +143,7 @@ while True:
 
     # run macro to cast bobber
     pyautogui.press('=')
+    time.sleep(2)
 
     # take screenshot
     pyautogui.screenshot('screenshot.png')
@@ -151,7 +209,7 @@ while True:
         print('monitor avg', bobber_average, datetime.now())
 
         # collect some monitor image avgs for a good baseline value
-        if len(bobber_image_averages) < 7:
+        if len(bobber_image_averages) < BOBBER_SAMPLE_SIZE:
             bobber_image_averages.append(bobber_average)
             continue
 
