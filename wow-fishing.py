@@ -38,6 +38,12 @@ zone_mapping = {
         'standard-deviations': 2.5,
         'open-clams': False,
     },
+    'durotar': {
+        'image': 'durotar.png',
+        'confidence': 0.3,
+        'standard-deviations': 2.5,
+        'open-clams': False,
+    },
     'dustwallow-marsh': {
         'image': 'dustwallow-marsh.png',
         'confidence': 0.4,
@@ -144,6 +150,8 @@ while True:
     # run macro to cast bobber
     pyautogui.press('=')
     time.sleep(2)
+    print('')
+    print('casting bobber')
 
     # take screenshot
     pyautogui.screenshot('screenshot.png')
