@@ -13,6 +13,10 @@ pyautogui = "^0.9.53"
 numpy = "^1.24.3"
 opencv-python = "^4.7.0.72"
 
+[tool.flake8]
+# E501 = line length
+# W503 = line break before operator
+ignore = ['E501', 'W503', 'T201']
 
 [build-system]
 requires = ["poetry-core"]
