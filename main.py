@@ -73,6 +73,13 @@ def watch_bobber(x, y):
             return True
 
 
+def remove_items():
+    for key in ["1", "2"]:
+        for _ in range(40):
+            pyautogui.press(key)
+            time.sleep(1.5)
+
+
 def main():
     screen = pyautogui.screenshot()
     print("screen size", screen.size)
@@ -92,6 +99,8 @@ def main():
     bottom = height * (3 / 4)
 
     time.sleep(3)
+
+    start_time = datetime.utcnow()
 
     while True:
         pyautogui.moveTo(200, 200)
@@ -124,6 +133,10 @@ def main():
         if bite:
             pyautogui.rightClick(x=bobber_x / 2, y=bobber_y / 2)
             time.sleep(1)
+
+        if (datetime.utcnow() - start_time).seconds >= 1800:
+            remove_items()
+            start_time = datetime.utcnow()
 
 
 main()
