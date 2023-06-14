@@ -134,7 +134,9 @@ def main():
             pyautogui.rightClick(x=bobber_x / 2, y=bobber_y / 2)
             time.sleep(1)
 
-        if (datetime.utcnow() - start_time).seconds >= 1800:
+        seconds_since_start = (datetime.utcnow() - start_time).seconds
+        print(seconds_since_start, "since start")
+        if seconds_since_start >= 1800:
             remove_items()
             start_time = datetime.utcnow()
 
