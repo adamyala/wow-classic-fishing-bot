@@ -74,7 +74,7 @@ def watch_bobber(x, y):
 
 
 def remove_items():
-    for key in ["1", "2"]:
+    for key in ["1", "2", "3", "4"]:
         for _ in range(40):
             pyautogui.press(key)
             time.sleep(1.5)
@@ -117,7 +117,9 @@ def main():
 
         # look for the bobber. some zones work better with a different confidence level than others
         target = pyautogui.locate(
-            bobber_image_file, cropped_image, confidence=LOCATOR_CONFIDENCE
+            needleImage=bobber_image_file,
+            haystackImage=cropped_image,
+            confidence=LOCATOR_CONFIDENCE,
         )
         if not target:
             print("not found")
